@@ -1,4 +1,4 @@
-# Early warning signs of critical transitions - The alpha-stable case (Layritz et al, 2023)
+## Early warning signs of critical transitions - The alpha-stable case (Layritz et al, 2023)
 
 This code reproduces the data and analysis for https://arxiv.org/pdf/2311.16350.pdf
 
