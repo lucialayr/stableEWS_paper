@@ -6,9 +6,9 @@ The simulation code was run on the CoolMUC2 Cluster of the Leibniz Supercomputin
 
 If you just want to test the simulations locally, `test_run.py` will generate one iteration of both systems for both the linear and non-linear case. The non-linear case is commented out by default as this takes some time to run.
 
-For this run `python3 code/run_test.py`. The output will apear in `data/new`
+For this run `python3 code/run_test.py`. The output will appear in `data/new`
 
-Running `figures.R` will produces all figures. The figures will be found in `reports/paper`.
+Running `figures.R` will produce all figures. The figures will be found in `reports/paper`.
 
 Conda environment
 
