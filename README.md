@@ -14,7 +14,7 @@ Conda environment
 
 ```
 conda create --name alphastableEWS python=3.9
-source activate alphastableEWS" > ~/.bashrc
+source activate alphastableEWS
 conda install -c conda-forge numpy=1.23.1 scipy=1.9.0 pandas=1.4.3 
 ```
 
