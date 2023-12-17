@@ -10,62 +10,18 @@ library(stable)
 library(zoo)
 (library("scales"))
 
-setwd("~/02_Science/alphastableEWS")
+setwd("~/02_Science/alphastableEWS_paper")
 
 #overview
-plot_var_neq = function() {
-  a = 2
-  
-  df = read.csv(paste0("data/var_lin_neq_alpha2.csv")) %>%
-    filter(k != 0) %>%
-    mutate(system = "Linear",
-            alpha = paste0("\U03B1 = ", a)) %>%
-    filter(var_sample != 0) %>%
-    select(k, sample, var_sample, system, alpha)
-    
-  df_nol = read.csv(paste0("data/var_nol_neq_alpha2.csv")) %>%
-    filter(k != 0) %>%
-    mutate(system = "Non-linear \n(Fold)",
-           alpha = paste0("\U03B1 = ", a)) %>%
-    filter(var_sample != 0) %>%
-    select(k, sample, var_sample, system, alpha)
-    
-  df = df_nol %>%
-      full_join(df) %>%
-      mutate(var_true = 0.02/(2*k)) %>%
-    group_by(alpha, system, sample) %>%
-    arrange(alpha, system, sample, k) %>%
-    mutate(var_smoothed = slider::slide_dbl(var_sample, mean, .before =5, .after = 5)) 
-  
-  
-  df_mean = df %>%
-    group_by(alpha, k, system) %>%
-    summarize(mean_var = mean(var_smoothed, na.rm = TRUE)) %>%
-    group_by(system) %>%
-    mutate(mean_max = max(mean_var),
-           mean_min = min(mean_var)) %>%
-    ungroup()
-  
-  (p = ggplot() + theme_bw() +
-      geom_line(data = df, aes(x = k, y = var_smoothed, group = interaction(sample, alpha, system), color = system), alpha = .8, linewidth = .1) +
-      geom_line(data = df_mean, aes(x = k, y = mean_var, color = system), alpha = .9, linewidth = .7) +
-      scico::scale_colour_scico_d(palette = "roma", name = expression(Estimated~gamma), begin = .25, end = .8) +
-      scale_linetype_manual(values = c("Theory" = "dashed"), name = "") + 
-      scale_x_reverse(limits = c(4.5, 0), expression(Bifurcation~parameter~k~symbol('\256'))) +
-      scale_y_continuous(name = expression(gamma[X]), limits = c(0, 0.012)) +
-      theme(panel.grid.minor = element_blank()))
-  
-  return(p)
-}
-plot_var_neq() 
+
 
 plot_var_eq = function() {
   
-  df = read.csv(paste0("data/var_lin_eq_alpha2_sample_large.csv")) %>%
+  df = read.csv(paste0("data/var_lin_eq_alpha2.csv")) %>%
     filter(k != 0) %>%
     mutate(system = "Linear")
   
-  df_nol = read.csv(paste0("data/var_nol_eq_alpha2_sample_large.csv")) %>%
+  df_nol = read.csv(paste0("data/var_nol_eq_alpha2.csv")) %>%
     filter(k != 0) %>%
     mutate(system = "Non-linear \n(Fold)")
   
