@@ -1,4 +1,4 @@
-## A Generalized Approach to Early Warning Signs of Critical1Transitions in Dynamical Systems driven by α-Stable Noise
+## A Generalized Approach to Early Warning Signs of Critical Transitions in Dynamical Systems driven by α-Stable Noise
 
 This code reproduces the data and analysis for the paper 'A Generalized Approach to Early Warning Signs of Critical Transitions in Dynamical Systems driven by α-Stable Noise' currently under review at Methods in Ecology & Evolution.
 
