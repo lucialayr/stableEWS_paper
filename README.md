@@ -1,6 +1,6 @@
-## Early warning signs of critical transitions - The alpha-stable case (Layritz et al, 2023)
+## A Generalized Approach to Early Warning Signs of Critical1Transitions in Dynamical Systems driven by α-Stable Noise
 
-This code reproduces the data and analysis for https://arxiv.org/pdf/2311.16350.pdf
+This code reproduces the data and analysis for the paper 'A Generalized Approach to Early Warning Signs of Critical Transitions in Dynamical Systems driven by α-Stable Noise' currently under review at Methods in Ecology & Evolution.
 
 The simulation code was run on the CoolMUC2 Cluster of the Leibniz Supercomputing Center. The output of these simulations are found in `data`.
 
