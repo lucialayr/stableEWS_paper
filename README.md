@@ -2,9 +2,9 @@
 
 This code reproduces the data and analysis for the paper 'A Generalized Approach to Early Warning Signs of Critical Transitions in Dynamical Systems driven by α-Stable Noise' currently under review at Methods in Ecology & Evolution.
 
-The simulation code was run on the CoolMUC2 Cluster of the Leibniz Supercomputing Center. The output of these simulations are found in `data`.
+The simulation code was optimized for efficient execution on parallelized High-Performance Computing (HPC) infrastructure. The output of these simulations is found in `data`.
 
-If you just want to test the simulations locally, `test_run.py` will generate one iteration of both systems for both the linear and non-linear case. The non-linear case is commented out by default as this takes some time to run.
+If you just want to test the simulations locally, `test_run.py` will generate one iteration of both systems for the linear and non-linear cases. The non-linear case is commented out by default as this takes some time to run.
 
 For this run `python3 code/run_test.py`. The output will appear in `data/new`
 
