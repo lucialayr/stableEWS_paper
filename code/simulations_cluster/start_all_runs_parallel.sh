@@ -5,7 +5,7 @@
 #SBATCH --output=%j.log
 #SBATCH --job-name=simulate_more_alphas_parallel
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=lucia.layritz@tum.de
+#SBATCH --mail-user=<enteremail>
 #SBATCH --time=12:00:00
 #SBATCH --clusters=htls
 #SBATCH --partition=htls_batch
