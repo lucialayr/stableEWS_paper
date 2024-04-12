@@ -1,6 +1,6 @@
 ## A Generalized Approach to Early Warning Signs of Critical Transitions in Dynamical Systems driven by α-Stable Noise
 
-This code reproduces the data and analysis for the paper 'A Generalized Approach to Early Warning Signs of Critical Transitions in Dynamical Systems driven by α-Stable Noise' currently under review at Methods in Ecology & Evolution.
+This code reproduces the data and analysis for the paper 'A Generalized Approach to Early Warning Signs of Critical Transitions in Dynamical Systems driven by α-Stable Noise' currently under considerations at Theoretical Ecology
 
 The simulation code was optimized for efficient execution on parallelized High-Performance Computing (HPC) infrastructure. The output of these simulations is found in `data`.
 
