@@ -8,7 +8,8 @@ library(ggnewscale)
 library(ggridges)
 library(stable)
 library(zoo)
-(library("scales"))
+library(scales)
+library(latex2exp)
 
 setwd("~/02_Science/alphastableEWS_paper")
 
@@ -48,7 +49,7 @@ plot_var_eq = function() {
   (p = ggplot() + theme_bw() +
       geom_line(data = df, aes(x = k, y = var_true, linetype = "Theory"), linewidth =.5, alpha = .7) +
       geom_point(data = df, aes(x = k, y = variance, fill = system), 
-                 color = "darkgrey", stroke = 0.001, shape = 21, alpha = .5, position = position_jitter(width = .15), size = 1) +
+                 color = "grey20", stroke = 0.001, shape = 21, alpha = .5, position = position_jitter(width = .15), size = 1.5) +
       geom_point(data = df_mean, aes(x = k, y = mean, fill = system, size = system), color = "black",  shape = 21, stroke = .5) +
       scale_color_manual(values = line_color, name = " ", guide = guide_legend(title = NULL)) +
       scale_linetype_manual(values = c("Theory" = "dashed"), name = "") +
@@ -97,8 +98,9 @@ alpha_stable_dist = function() {
   return(p2)
 }
 p2 = alpha_stable_dist()
-plot_grid(p1 , p2, nrow = 1, labels = c("A", "B"), rel_widths = c(1, .8))
+plot_grid(p1 , p2, nrow = 1, labels = c("(a)", "(c)"), rel_widths = c(1, .8))
 ggsave("reports/paper/theory.png", width = 8.2, height = 4,  bg = "white")
+ggsave("reports/paper/theory.pdf", width = 8.2, height = 4,  bg = "white", dpi = 600)
 
 #gamma equilibrium runs
 plot_gamma_eq = function(A =c(1.3, 1.5, 1.8, 2)) {
@@ -109,13 +111,13 @@ plot_gamma_eq = function(A =c(1.3, 1.5, 1.8, 2)) {
     df = read.csv(paste0("data/gamma_lin_eq_alpha", a, "_rev.csv")) %>%
       filter(k != 0) %>%
       mutate(system = "Linear",
-             alpha = paste0("\U03B1 = ", a))
+             alpha = paste0(a))
     
   
     df_nol = read.csv(paste0("data/gamma_nol_eq_alpha", a, "_rev.csv")) %>%
       filter(k != 0) %>%
       mutate(system = "Non-linear \n(Fold)",
-             alpha = paste0("\U03B1 = ", a))
+             alpha = paste0(a))
     
     df = df_nol %>%
       full_join(df) %>%
@@ -144,11 +146,26 @@ plot_gamma_eq = function(A =c(1.3, 1.5, 1.8, 2)) {
   
   df_mean$system = factor(df_mean$system, levels = c("Non-linear \n(Fold)", "Linear"))
   
+  df$alpha <- factor(df$alpha,
+                     levels = rev(c(2, 1.8, 1.5, 1.3)),
+                     labels=rev(c('2'=parse(text=TeX('$\\alpha$ = 2')),
+                                  '1.8'=parse(text=TeX('$\\alpha$ = 1.8')),
+                                  '1.5'=parse(text=TeX('$\\alpha$ = 1.5')),
+                                  '1.3'=parse(text=TeX('$\\alpha$ = 1.3')))))
+  
+  df_mean$alpha <- factor(df_mean$alpha,
+                          levels = rev(c(2, 1.8, 1.5, 1.3)),
+                          labels=rev(c('2'=parse(text=TeX('$\\alpha$ = 2')),
+                                       '1.8'=parse(text=TeX('$\\alpha$ = 1.8')),
+                                       '1.5'=parse(text=TeX('$\\alpha$ = 1.5')),
+                                       '1.3'=parse(text=TeX('$\\alpha$ = 1.3')))))
+
+  
   (p = ggplot() + theme_bw() +
       geom_line(data = df, aes(x = k, y = gamma_true, color = "Theory", linetype = "Theory"), linewidth =.75) +
-      facet_wrap(~factor(alpha, levels=c('\U03B1 = 2','\U03B1 = 1.8','\U03B1 = 1.5','\U03B1 = 1.3'))) + 
+      facet_wrap(~rev(alpha), labeller = label_parsed) + 
       geom_point(data = df, aes(x = k, y = gamma_sample, fill = system), 
-                 color = "darkgrey", stroke = 0.001, shape = 21, alpha = .5, position = position_jitter(width = .15), size = 1) +
+                 color = "grey20", stroke = 0.001, shape = 21, alpha = .5, position = position_jitter(width = .15), size = 1.5) +
       geom_point(data = df_mean, aes(x = k, y = mean, fill = system, size = system), color = "black",  shape = 21, stroke = .5) +
       scale_color_manual(values = line_color, name = " ") +
       scale_size_manual(values = sizes, name = "System")  +
@@ -165,6 +182,7 @@ plot_gamma_eq = function(A =c(1.3, 1.5, 1.8, 2)) {
 }
 plot_gamma_eq()
 ggsave("reports/paper/gamma_equilibrium.png", width = 7, height = 5)
+ggsave("reports/paper/gamma_equilibrium.pdf", width = 7, height = 5, dpi = 600)
 
 
 #gamma non-equilibrium runs
@@ -176,13 +194,13 @@ plot_gamma_neq = function(A =c(1.3, 1.5, 1.8, 2), cutoff_theory = .15) {
    df = read.csv(paste0("data/gamma_lin_neq_alpha", a, ".csv")) %>%
       filter(k != 0) %>%
       mutate(system = "Linear",
-             alpha = paste0("\U03B1 = ", a)) %>%
+             alpha = paste0(a)) %>%
       filter(gamma_sample != 0)
     
     df_nol = read.csv(paste0("data/gamma_nol_neq_alpha", a, ".csv")) %>%
       filter(k != 0) %>%
       mutate(system = "Non-linear \n(Fold)",
-             alpha = paste0("\U03B1 = ", a)) %>%
+             alpha = paste0(a)) %>%
       filter(gamma_sample != 0) 
     
     df = df_nol %>%
@@ -207,15 +225,31 @@ plot_gamma_neq = function(A =c(1.3, 1.5, 1.8, 2), cutoff_theory = .15) {
     mutate(mean_max = max(mean_gamma),
            mean_min = min(mean_gamma)) %>%
     ungroup()
-
-  colors = c("#E37222", "#532d5b", "#090979", "#64A0C8")
+  
+  df$alpha <- factor(df$alpha,
+                     levels = rev(c(2, 1.8, 1.5, 1.3)),
+                     labels=rev(c('2'=parse(text=TeX('$\\alpha$ = 2')),
+                              '1.8'=parse(text=TeX('$\\alpha$ = 1.8')),
+                              '1.5'=parse(text=TeX('$\\alpha$ = 1.5')),
+                              '1.3'=parse(text=TeX('$\\alpha$ = 1.3')))))
+  
+  df_mean$alpha <- factor(df_mean$alpha,
+                          levels = rev(c(2, 1.8, 1.5, 1.3)),
+                          labels=rev(c('2'=parse(text=TeX('$\\alpha$ = 2')),
+                                   '1.8'=parse(text=TeX('$\\alpha$ = 1.8')),
+                                   '1.5'=parse(text=TeX('$\\alpha$ = 1.5')),
+                                   '1.3'=parse(text=TeX('$\\alpha$ = 1.3')))))
+  
+  legend_labels = rev(c(TeX("$\\alpha$ = 2"), TeX("$\\alpha$ = 1.8"), TeX("$\\alpha$ = 1.5"), TeX("$\\alpha$ = 1.3")))
+  
+  colors = c("#E37222", "#532d5b",  "#090979",  "#64A0C8")
   (p = ggplot() + theme_bw() +
-      geom_line(data = df, aes(x = k, y = gamma_smoothed, group = interaction(run, alpha), color = alpha), alpha = .8, linewidth = .1) +
+      geom_line(data = df, aes(x = k, y = gamma_smoothed, group = interaction(run, alpha), color = alpha), alpha = .5, linewidth = .05) +
       geom_line(data = df[df$system == "Linear",], aes(x = k, y = gamma_true, group = interaction(system, alpha), color = alpha, linetype = "Theory"), alpha = .8,  linewidth = .6) +
       geom_line(data = df_mean, aes(x = k, y = mean_gamma, color = alpha), alpha = .9, linewidth = .7) +
-      scale_color_manual(values = colors, name = expression(Estimated~gamma)) + 
+      scale_color_manual(values = colors,  name = expression(Estimated~gamma), labels = legend_labels) + 
       scale_linetype_manual(values = c("Theory" = "dashed"), name = "") + 
-      facet_grid(rows = vars(system), cols = vars(alpha), scales = "free") + 
+      facet_grid(rows = vars(system), cols = vars(alpha), scales = "free", labeller = label_parsed) + 
       scale_x_continuous(limits = c(0, 5.25), expression(symbol('\254')~~~Bifurcation~parameter~k)) +
       scale_y_continuous(name = expression(gamma[X])) +
       theme(panel.grid.minor = element_blank()))
@@ -224,6 +258,7 @@ plot_gamma_neq = function(A =c(1.3, 1.5, 1.8, 2), cutoff_theory = .15) {
 }
 plot_gamma_neq() 
 ggsave("reports/paper/gamma_noneq.png",  width = 8, height = 4, dpi = 1000)
+ggsave("reports/paper/gamma_noneq.pdf",  width = 8, height = 4, dpi = 1000)
 
 #gamma trajectories
 extract_numbers = function(string) {
@@ -337,7 +372,7 @@ plot_trajectories = function(A = c(2, 1.5, 1)) {
   p2 = plot_traj_nol(A = A)
   
   p = plot_grid(plot_grid(p1 + theme(legend.position = "None"), 
-                      p2 + theme(legend.position = "None"), ncol = 1, align = "hv", labels = c("A", "B")), 
+                      p2 + theme(legend.position = "None"), ncol = 1, align = "hv", labels = c("(a)", "(b)")), 
             legend,
             ncol = 1, rel_heights = c(6,1))
   
@@ -345,7 +380,7 @@ plot_trajectories = function(A = c(2, 1.5, 1)) {
 }
 plot_trajectories()
 ggsave("reports/paper/trajectories.png", width = 7, height = 5, bg = "white")
-
+ggsave("reports/paper/trajectories.pdf", width = 7, height = 5, bg = "white", dpi = 600)
 
 variance_convergance = function() {
   data = list()
@@ -397,7 +432,8 @@ variance_convergance = function() {
   
 }
 variance_convergance()
-ggsave("reports/paper/variance_convergance.png", width = 7, height = 3, bg = "white") 
+ggsave("reports/paper/variance_convergance.png", width = 7, height = 3, bg = "white", dpi = 600) 
+ggsave("reports/paper/variance_convergance.pdf", width = 7, height = 3, bg = "white", dpi = 600) 
 
 #benchmark
 benchmark_gL = function() {
@@ -456,13 +492,25 @@ benchmark_gX = function() {
               gamma_sample = mean(gamma_sample)) %>% 
     mutate(gamma_true = 0.1*(1/(alpha))^(1/alpha),
            Error = ((gamma_sample - gamma_true)^2)/gamma_true,
-           gamma_sd = gamma_sd/gamma_true, 
-           alpha = paste0("\U03B1 = ", alpha))
+           gamma_sd = gamma_sd/gamma_true)
   
   box = df %>%
     filter(W_in == 70,
            T_in == 5)
   
+  df$alpha = factor(df$alpha,
+                     levels = rev(c(2.0, 1.8, 1.5, 1.3)),
+                     labels=rev(c('2.0'=parse(text=TeX('$\\alpha$ = 2')),
+                                  '1.8'=parse(text=TeX('$\\alpha$ = 1.8')),
+                                  '1.5'=parse(text=TeX('$\\alpha$ = 1.5')),
+                                  '1.3'=parse(text=TeX('$\\alpha$ = 1.3')))))
+  
+  box$alpha = factor(box$alpha,
+                    levels = rev(c(2.0, 1.8, 1.5, 1.3)),
+                    labels=rev(c('2.0'=parse(text=TeX('$\\alpha$ = 2')),
+                                 '1.8'=parse(text=TeX('$\\alpha$ = 1.8')),
+                                 '1.5'=parse(text=TeX('$\\alpha$ = 1.5')),
+                                 '1.3'=parse(text=TeX('$\\alpha$ = 1.3')))))
   
   (p = ggplot() + theme_bw() + 
       geom_point(data = df, aes(x = as.factor(W_in), y = as.factor(T_in), fill = (Error), size = (abs(gamma_sd))), 
@@ -473,7 +521,7 @@ benchmark_gX = function() {
     scale_x_discrete(name = "Window size") +
     scale_y_discrete(name = "Number of trajectories") +
     scale_size_continuous(name = "Standard Error", range = c(1, 7)) +
-    facet_wrap(~alpha)  +
+    facet_wrap(~(factor(alpha)), labeller=label_parsed)  +
     theme(text = element_text(size = 12),
           strip.background = element_rect(fill = "transparent")))
   
@@ -485,8 +533,8 @@ benchmark_gX = function() {
   return(p)
 }
 p2 = benchmark_gX()
-plot_grid(p1, p2, nrow = 1, labels = c("A", "B"), rel_widths = c(4,5))
+plot_grid(p1, p2, nrow = 1, labels = c("(a)", "(c)"), rel_widths = c(4,5))
 ggsave("reports/paper/benchmark.png", width = 8, height = 4, bg = "white") 
-
+ggsave("reports/paper/benchmark.pdf", width = 8, height = 4, bg = "white", dpi = 600) 
 
 
