@@ -52,7 +52,7 @@ def simulate(alpha, s):
 
 	for j in range(1, N):
 		Linc = 0.1*dtdL[j]
-		Xtemp = Xtemp - dt*k*Xtemp + Linc
+		Xtemp = Xtemp - (dt*k*Xtemp)/(1 + dt*abs(k*Xtemp)) + Linc
 		X[j-1] = Xtemp
 
 		

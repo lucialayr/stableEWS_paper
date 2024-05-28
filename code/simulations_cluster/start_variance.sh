@@ -8,12 +8,13 @@
 #SBATCH --mail-user=lucia.layritz@tum.de
 #SBATCH --time=100:00:00
 #SBATCH --clusters=htls
-#SBATCH --partition=htls_batch
+#SBATCH --partition=htls_cm4
 #SBATCH --reservation=htls_users
-#SBATCH --ntasks-per-node=28
-#SBATCH --nodes=4
+#SBATCH --ntasks=160
+#SBATCH --ntasks-per-core=2
 #SBATCH --get-user-env
 #SBATCH --export=NONE
+
 
 module load slurm_setup
 module load anaconda3

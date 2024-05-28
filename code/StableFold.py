@@ -46,7 +46,7 @@ class StableFold:
 
 					for j in range(1, N):
 						Linc = 0.1*dtdL[j]
-						Xtemp = Xtemp + dt*(k - Xtemp**2) + Linc
+						Xtemp = Xtemp + (dt*(k - Xtemp**2))/(1 + dt*(k - Xtemp**2)) + Linc
 						X[j-1] = Xtemp
 						if Xtemp < X_critical:
 							print("overflow encountered at timestep " + str(j))

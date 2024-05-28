@@ -8,12 +8,13 @@
 #SBATCH --mail-user=lucia.layritz@tum.de
 #SBATCH --time=100:00:00
 #SBATCH --clusters=htls
-#SBATCH --partition=htls_batch
+#SBATCH --partition=htls_cm4
 #SBATCH --reservation=htls_users
-#SBATCH --ntasks-per-node=28
-#SBATCH --nodes=1
+#SBATCH --ntasks=160
+#SBATCH --ntasks-per-core=2
 #SBATCH --get-user-env
 #SBATCH --export=NONE
+
 
 module load slurm_setup
 module load anaconda3
@@ -24,7 +25,7 @@ srun -c 1 --mpi=none --mem-per-cpu=1800MB --exclusive -n 1 -N 1 python benchmark
 
 for a in 2 1.8 1.5 1.3
 do
-	for nt in 1 #3 5 10
+	for nt in 1 3 5 10
 	do
 	
 		for w in 10 50 70 100
@@ -40,7 +41,7 @@ done
 
 wait
 
-srun -c 1 --mpi=none --mem-per-cpu=1800MB --exclusive -n 1 -N 1 python merge_files_neq.py &
+srun -c 1 --mpi=none --mem-per-cpu=1800MB --exclusive -n 1 -N 1 python merge_files_benchmark.py &
 wait
 
 

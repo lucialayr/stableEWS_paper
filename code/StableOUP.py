@@ -42,7 +42,7 @@ class StableOUP:
 
 					for j in range(1, N):
 						Linc = 0.1*dtdL[j]
-						Xtemp = Xtemp - dt*k*Xtemp + Linc
+						Xtemp = Xtemp - (dt*k*Xtemp)/(1 + dt*k*Xtemp) + Linc
 						X[j-1] = Xtemp
 
 

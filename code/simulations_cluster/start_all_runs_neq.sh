@@ -3,22 +3,24 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --error=%j.err
 #SBATCH --output=%j.log
-#SBATCH --job-name=simulate_more_alphas_parallel
+#SBATCH --job-name=gamma_neq
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=lucia.layritz@tum.de
 #SBATCH --time=100:00:00
 #SBATCH --clusters=htls
-#SBATCH --partition=htls_batch
+#SBATCH --partition=htls_cm4
 #SBATCH --reservation=htls_users
-#SBATCH --ntasks-per-node=28
-#SBATCH --nodes=3
+#SBATCH --ntasks=160
+#SBATCH --ntasks-per-core=2
 #SBATCH --get-user-env
 #SBATCH --export=NONE
+
 
 module load slurm_setup
 module load anaconda3
 
 source activate mypython38
+
 
 
 for a in 2 1.8 1.5 1.3
