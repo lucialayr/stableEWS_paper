@@ -19,20 +19,21 @@ alpha_stable_dist = function() {
   x = seq(-5, 5, by = .1)
   
   df = data.frame("x" = x,
-                  "0.5" = dstable(x, tail = 0.5),
-                  "1" = dstable(x, tail = 1),
+                  "2" = dstable(x, tail = 2),
                   "1.5" = dstable(x, tail = 1.5),
-                  "2" = dstable(x, tail = 2)) %>%
+                  "1" = dstable(x, tail = 1)
+                  ) %>%
     melt(id.vars = "x")
   
-  colors = c("#E37222", "#532d5b", "#090979", "#64A0C8")
+
+  colors = rev(c("#532d5b", "#090979", "#64A0C8"))
   
   (p2 = ggplot() + theme_bw() +
       geom_line(data = df, 
                 aes(x = x, y = value, color = variable),
                 linewidth = 1, alpha = .9) +
-      scale_y_continuous(name = "p(X)", expand = c(0,0), limits = c(0,.95)) +
-      scale_x_continuous(expand = c(0,0)) +
+      scale_y_continuous(name = "p(X)", expand = c(0,0), limits = c(-0.001,.47)) +
+      scale_x_continuous(name = "X", expand = c(0,0)) +
       theme(text = element_text(size = 12), 
             legend.position = c(.2, .75),
             legend.background = element_rect(fill='white', color = "darkgrey"),
@@ -40,9 +41,9 @@ alpha_stable_dist = function() {
             panel.background = element_rect(fill = "transparent", colour = NA),  
             plot.background = element_rect(fill = "transparent", colour = NA),
             strip.background = element_rect(fill = "transparent", color = NA),
-            plot.margin = 0.3) +
+            plot.margin = margin(t = 5.5, l = 5.5, b = 5.5, r = 15, unit = "pt")) +
       scale_color_manual(values = colors, name = expression(alpha),
-                         labels = c(0.5, 1, 1.5, 2)))
+                         labels = c(2, 1.5, 1)))
   
   return(p2)
 }
@@ -88,12 +89,14 @@ plot_var_eq = function() {
       scale_size_manual(values = sizes, name = "System")  +
       scale_fill_manual(values = colors_means, name = "System") +
       scale_y_continuous(trans = 'log10', name = "EWS Var X ", expand = c(0,0)) +
-      scale_x_continuous(trans = 'log10', name = "Bifurcation parameter k", labels = scales::comma, breaks = c(0.01, 1, 100), expand = c(0,0)) +
+      scale_x_continuous(trans = 'log10', name = "Bifurcation parameter k", breaks = c(0.01, 1, 100), expand = c(0,0), labels = c(0.01, 1, 100)) +
       theme(text = element_text(size = 12),
             legend.position = c(.75, .75),
             legend.title = element_blank(),
             legend.background = element_rect(fill='white', color = "darkgrey"),
-            legend.box.background = element_rect(fill='transparent', color = NA)) + guides(size = "none"))
+            legend.box.background = element_rect(fill='transparent', color = NA),
+            plot.margin = margin(t = 5.5, l = 5.5, b = 5.5, r = 5.5, unit = "pt")) + 
+      guides(size = "none"))
   
   
   return(p)
@@ -101,7 +104,7 @@ plot_var_eq = function() {
 }
 p2 = plot_var_eq()
 
-plot_grid(p1 , p2, nrow = 1, labels = c("(a)", "(b)"), rel_widths = c(1, .8))
+plot_grid(p1 , p2, nrow = 1, labels = c("(a)", "(b)"),  hjust = .05)
 ggsave("reports/paper/theory.png", width = 8.2, height = 4,  bg = "white")
 ggsave("reports/paper/theory.pdf", width = 8.2, height = 4,  bg = "white", dpi = 600)
 
@@ -111,13 +114,13 @@ plot_gamma_eq = function(A =c(1.3, 1.5, 1.8, 2)) {
   data = list()
   
   for (a in A) {
-    df = read.csv(paste0("data/gamma_lin_eq_alpha", a, "_rev.csv")) %>%
+    df = read.csv(paste0("data/gamma_lin_eq_alpha", a, ".csv")) %>%
       filter(k != 0) %>%
       mutate(system = "Linear",
              alpha = paste0(a))
     
   
-    df_nol = read.csv(paste0("data/gamma_nol_eq_alpha", a, "_rev.csv")) %>%
+    df_nol = read.csv(paste0("data/gamma_nol_eq_alpha", a, ".csv")) %>%
       filter(k != 0) %>%
       mutate(system = "Non-linear \n(Fold)",
              alpha = paste0(a))
@@ -252,9 +255,9 @@ plot_gamma_neq = function(A =c(1.3, 1.5, 1.8, 2), cutoff_theory = .15) {
       geom_line(data = df_mean, aes(x = k, y = mean_gamma, color = alpha), alpha = .9, linewidth = .7) +
       scale_color_manual(values = colors,  name = expression(Estimated~gamma), labels = legend_labels) + 
       scale_linetype_manual(values = c("Theory" = "dashed"), name = "") + 
-      facet_grid(rows = vars(system), cols = vars(alpha), scales = "free", labeller = label_parsed, expand = c(0,0)) + 
+      facet_grid(rows = vars(system), cols = vars(alpha), scales = "free", labeller = label_parsed) + 
       scale_x_continuous(limits = c(0, 5.25), expression(symbol('\254')~~~Bifurcation~parameter~k), expand = c(0,0)) +
-      scale_y_continuous(name = expression(gamma[X])) +
+      scale_y_continuous(name = expression(gamma[X]), expand = c(0,0)) +
       theme(panel.grid.minor = element_blank()))
   
   return(p)
@@ -311,7 +314,7 @@ plot_traj_lin = function(system.type = "lin", A = c(2, 1.5, 1)) {
   
   (p = ggplot() + theme_bw() + 
       scale_x_continuous(name = expression(symbol('\254')~~~Bifurcation~parameter~k), limits = c(-0.05, 1), expand = c(0, 0)) +
-      scale_y_continuous(name = "State X", trans = pseudolog10_trans) + 
+      scale_y_continuous(name = "State X", trans = pseudolog10_trans, expand = c(0,0)) + 
       geom_hline(yintercept = 0, color = "darkgrey") +
       geom_vline(xintercept = 0, linetype = "dotted", color = "grey20") +
       geom_segment(aes(x = -0.05, y = 0, yend = 0, xend = 0.1), color = "black", linetype = "dashed", linewidth = .75) + 
@@ -356,7 +359,7 @@ plot_traj_nol = function(system.type = "nol", A = c(2, 1.5, 1)) {
   
   (p = ggplot() + theme_bw() + 
       scale_x_continuous(name = expression(symbol('\254')~~~Bifurcation~parameter~k), limits = c(-0.05, 1), expand = c(0, 0)) +
-      scale_y_continuous(name = "State X", trans = pseudolog10_trans, limits = c(-0.4, 1.25), expand = c(0,0)) + 
+      scale_y_continuous(name = "State X", trans = pseudolog10_trans, limits = c(-1, 1.25), expand = c(0,0)) + 
       geom_hline(yintercept = 0, color = "darkgrey") +
       geom_vline(xintercept = 0, linetype = "dotted", color = "grey20") +
       geom_line(data = df, aes(x = K, y = x_star), linewidth = .75)  +
@@ -412,8 +415,8 @@ variance_convergance = function() {
   colors_lines = c("#532d5b", "#eb975c")
   colors = c("#532d5b", "#E37222")
   
-  levels(df$variable) = c("Var(X)", expression(gamma[X]))
-  levels(df_mean$variable) = c("Var(X)", expression(gamma [X]))
+  levels(df$variable) = c("Var~X", expression(gamma[X]))
+  levels(df_mean$variable) = c("Var~X", expression(gamma [X]))
   
   (p = ggplot() + theme_bw() + 
       geom_line(data = df, aes(x = time_step, y = value_smoothed, colour = alpha, group = interaction(run, alpha)), linewidth = .1, alpha = .5) +
@@ -421,7 +424,7 @@ variance_convergance = function() {
       ggnewscale::new_scale_color() +
       geom_line(data = df_mean, aes(x = time_step, y = value, colour = alpha, group = interaction(alpha)), alpha = .9, linewidth = .6) +
       scale_color_manual(values = colors, name = expression(alpha)) +
-      scale_y_continuous(trans = "log10", name = "EWS", limits = c(0.0001, .2), expand = c(0,0)) +
+      scale_y_continuous(trans = "log10", name = "EWS", limits = c(0.0001, .25), expand = c(0,0)) +
       scale_x_continuous(name = "Simulation timestep", limits = c(0, 10000), expand = c(0,0)) + 
       facet_wrap(~variable, labeller=label_parsed) +
       theme(text = element_text(size = 12),
@@ -456,7 +459,7 @@ benchmark_gL = function() {
                           point_shape = '|', point_size = 2, point_alpha = 1, alpha = 0.4, size = 0.6) +
       scale_fill_manual(values = colors_long, name = expression(alpha)) +
       scale_x_continuous(limits = c(0.7, 1.3), name = expression(gamma[~L]), breaks = c(0.75, 1, 1.25), expand = c(0,0)) +
-      scale_y_discrete(name = expression(alpha[~~L]), expand = expand_scale(mult = c(0.25, .7)), expand = c(0,0)) +
+      scale_y_discrete(name = expression(alpha[~~L]), expand = expand_scale(mult = c(0.25, .7))) +
       theme(text = element_text(size = 15),
             legend.position=c(.5,.05),
             legend.direction = "horizontal",
@@ -521,8 +524,8 @@ benchmark_gX = function() {
       geom_point(data = box, aes(x = as.factor(W_in), y = as.factor(T_in), size =(abs(gamma_sd))), 
                  shape = 0, color = "darkgrey",size = 8) +
     scico::scale_fill_scico(palette = "lapaz", direction = -1,  name = "MSE") +
-    scale_x_discrete(name = "Window size", expand = c(0,0)) +
-    scale_y_discrete(name = "Number of trajectories", expand = c(0,0)) +
+    scale_x_discrete(name = "Window size") +
+    scale_y_discrete(name = "Number of trajectories") +
     scale_size_continuous(name = "Standard Error", range = c(1, 7)) +
     facet_wrap(~(factor(alpha)), labeller=label_parsed)  +
     theme(text = element_text(size = 12),
@@ -536,7 +539,7 @@ benchmark_gX = function() {
   return(p)
 }
 p2 = benchmark_gX()
-plot_grid(p1, p2, nrow = 1, labels = c("(a)", "(c)"), rel_widths = c(4,5))
+plot_grid(p1, p2, nrow = 1, labels = c("(a)", "(b)"), rel_widths = c(4,5))
 ggsave("reports/paper/benchmark.png", width = 8, height = 4, bg = "white") 
 ggsave("reports/paper/benchmark.pdf", width = 8, height = 4, bg = "white", dpi = 600) 
 
