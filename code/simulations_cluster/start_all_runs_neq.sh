@@ -5,7 +5,7 @@
 #SBATCH --output=%j.log
 #SBATCH --job-name=gamma_neq
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=lucia.layritz@tum.de
+#SBATCH --mail-user=<enteremail>
 #SBATCH --time=100:00:00
 #SBATCH --clusters=htls
 #SBATCH --partition=htls_cm4
