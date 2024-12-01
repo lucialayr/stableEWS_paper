@@ -48,12 +48,12 @@ def simulate(alpha, s):  #define a function that calculates one trajectory of on
 
 	for j in range(1, L): #spin simulation up until equilibrium
 		Linc = 0.1*dtdL[j]
-		Xtemp = Xtemp - dt*k*Xtemp + Linc
+		Xtemp = Xtemp - (dt*k*Xtemp)/(1 + dt*abs(k*Xtemp)) + Linc
 		X[j-1] = Xtemp
 						
 	for j in range(0, N):  #start estimation gamma every window timestep
 		Linc = 0.1*dtdL[j]
-		Xtemp = Xtemp - dt*K[j]*Xtemp + Linc
+		Xtemp = Xtemp - (dt*K[j]*Xtemp)/(1 + dt*abs(K[j]*Xtemp)) + Linc
 		X[L + j-1] = Xtemp
 
 		if j%window == 0:

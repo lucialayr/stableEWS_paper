@@ -1,3 +1,15 @@
+install.packages(c('latex2exp', 'scales', 'zoo', 'stable', 'rmutil', 'ggridges', 
+                   'ggnewscale', 'cowplot', 'reshape2', 'scico', 'forcats', 
+                   'stringr', 'dplyr', 'purrr', 'readr', 'tidyr', 'tibble', 'ggplot2', 'tidyverse'), 
+                 version = c('0.9.6', '1.3.0', '1.8-11', '1.1.6', '1.1.10', '0.5.4', 
+                             '0.4.8',  '1.1.1', '1.4.4', '1.5.0', '0.5.2', 
+                             '1.5.0', '1.0.10', '1.0.1', '2.1.3', '1.2.1', '3.1.8', '3.5.1', '1.3.2'), 
+                 repos='https://cran.rstudio.com/')
+
+if (require(devtools)) {
+  install_github('shabbychef/ggallin')
+}
+
 library(tidyverse)
 library(scico)
 library(reshape2)
@@ -11,7 +23,7 @@ library(zoo)
 library(scales)
 library(latex2exp)
 
-setwd("~/02_Science/alphastableEWS_paper")
+setwd("~/Desktop/PhD/stableEWS_paper")
 
 theme_set(
   theme_classic() + 
@@ -292,7 +304,7 @@ plot_gamma_neq = function(A =c(1.3, 1.5, 1.8, 2), cutoff_theory = .15) {
     scale_color_manual(values = colors,  name = expression(~gamma[X])) + 
     scale_linetype_manual(values = c("Theory" = "dashed", "Simulation" = "solid"), name = expression(~gamma[X])) + 
     scale_x_continuous(limits = c(0.25, 5), expand = c(0,0), breaks = c(1, 3, 5), name = expression(symbol('\254')~~~Bifurcation~parameter~k)) +
-    scale_y_continuous(name = expression(gamma[X]), limits = c(0.025, 0.11), expand = c(0,0), breaks = c(0, 0.05, 0.1)) +
+    scale_y_continuous(name = expression(gamma[X]), limits = c(0.025, 0.09), expand = c(0,0), breaks = c(0, 0.05, 0.075)) +
     facet_grid(rows = vars(system), cols = vars(alpha_label), scales = "free", labeller = label_parsed) + 
     theme(legend.position = "bottom",
             legend.direction = "horizontal") +
@@ -304,6 +316,7 @@ plot_gamma_neq = function(A =c(1.3, 1.5, 1.8, 2), cutoff_theory = .15) {
 plot_gamma_neq() 
 
 ggsave("reports/paper/gamma_noneq_diss.pdf",  width = 10, height = 6, scale = 1)
+
 
 #gamma trajectories
 extract_numbers = function(string) {
@@ -430,7 +443,6 @@ plot_trajectories = function(A = c(2, 1.5, 1)) {
           legend.direction = "horizontal"))
   
   legend = get_legend(p1)
-  
   
   p2 = plot_traj_nol(A = A)
   

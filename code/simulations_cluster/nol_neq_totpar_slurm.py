@@ -46,12 +46,12 @@ def simulate(alpha, s):
 
 	for j in range(1, L):
 		Linc = 0.1*dtdL[j]
-		Xtemp = Xtemp - dt*k*Xtemp + Linc
+		Xtemp = Xtemp + (dt*(k - Xtemp**2))/(1 + dt*abs(k - Xtemp**2)) + Linc
 		X[j-1] = Xtemp
 						
 	for j in range(0, N): 
 		Linc = 0.1*dtdL[j]
-		Xtemp = Xtemp  + dt*(K[j] - Xtemp**2) + Linc
+		Xtemp = Xtemp + (dt*(K[j] - Xtemp**2))/(1 + dt*abs(K[j] - Xtemp**2)) + Linc
 		X[L + j-1] = Xtemp
 		
 		X_critical = - np.sqrt(K[j]) - K[j]*0.1 #threshhold after which we consider trajectory to be escaped beyond unstable FP
